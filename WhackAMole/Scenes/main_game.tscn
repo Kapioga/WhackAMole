@@ -1,0 +1,163 @@
+[gd_scene load_steps=16 format=3 uid="uid://db2ap6dkrcxjs"]
+
+[ext_resource type="Script" path="res://Scripts/main_game.gd" id="1_13k8f"]
+[ext_resource type="PackedScene" uid="uid://cu8y7sbbv1c0f" path="res://Scenes/hammer.tscn" id="1_76ohg"]
+[ext_resource type="PackedScene" uid="uid://byeddsjgmjixx" path="res://Scenes/hole.tscn" id="2_38lg7"]
+[ext_resource type="Script" path="res://Scripts/hole.gd" id="2_r61ud"]
+[ext_resource type="Script" path="res://Scripts/Hole_Spawn_Timer.gd" id="5_3nk0v"]
+[ext_resource type="Texture2D" uid="uid://djy6fn0lghchr" path="res://Art/mole.png" id="6_iowtj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fqipr"]
+bg_color = Color(0.741176, 0.756863, 0.635294, 0.282353)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.988235, 0.772549, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3d0e"]
+bg_color = Color(0.6, 0.6, 0.6, 0.141176)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.772549, 0.639216, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_26k55"]
+font_size = 36
+
+[sub_resource type="Theme" id="Theme_8i8vq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_qfu1m"]
+font_size = 60
+
+[sub_resource type="Animation" id="Animation_hi4ia"]
+resource_name = "Moving boy"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.04, 0.04), Vector2(0.05, 0.05), Vector2(0.04, 0.04), Vector2(0.03, 0.03)]
+}
+
+[sub_resource type="Animation" id="Animation_6h2t2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.04, 0.04)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_b1yli"]
+_data = {
+"Moving boy": SubResource("Animation_hi4ia"),
+"RESET": SubResource("Animation_6h2t2")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_ysnx4"]
+font_size = 35
+
+[node name="MainGame" type="Node2D"]
+script = ExtResource("1_13k8f")
+hole_spawn = ExtResource("2_38lg7")
+
+[node name="Pane Panel" type="Panel" parent="."]
+offset_left = 116.0
+offset_top = 60.0
+offset_right = 616.0
+offset_bottom = 560.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_fqipr")
+metadata/_edit_lock_ = true
+
+[node name="ScorePanel" type="Panel" parent="."]
+offset_left = 771.0
+offset_top = 60.0
+offset_right = 1111.0
+offset_bottom = 560.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_y3d0e")
+metadata/_edit_lock_ = true
+
+[node name="Hole" type="Node2D" parent="."]
+visible = false
+position = Vector2(429, 145)
+script = ExtResource("2_r61ud")
+
+[node name="Hammer" parent="." instance=ExtResource("1_76ohg")]
+
+[node name="Hole_Spawn_Timer" type="Timer" parent="."]
+autostart = true
+script = ExtResource("5_3nk0v")
+
+[node name="Score" type="Label" parent="."]
+offset_left = 887.0
+offset_top = 441.0
+offset_right = 1002.0
+offset_bottom = 493.0
+text = "SCORE"
+label_settings = SubResource("LabelSettings_26k55")
+
+[node name="ColorRect" type="ColorRect" parent="Score"]
+layout_mode = 0
+offset_left = -9.0
+offset_top = 42.0
+offset_right = 316.0
+offset_bottom = 82.0
+theme = SubResource("Theme_8i8vq")
+color = Color(0.290196, 0.207843, 0.0431373, 1)
+
+[node name="Score_Label" type="Label" parent="Score"]
+layout_mode = 0
+offset_left = 160.0
+offset_top = -36.0
+offset_right = 200.0
+offset_bottom = 47.0
+text = "0"
+label_settings = SubResource("LabelSettings_qfu1m")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(948, 287)
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("6_iowtj")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Sprite2D")
+libraries = {
+"": SubResource("AnimationLibrary_b1yli")
+}
+autoplay = "Moving boy"
+
+[node name="Detect_Area2d" parent="." instance=ExtResource("2_38lg7")]
+visible = false
+position = Vector2(-134, 71)
+
+[node name="TopGameLabel" type="Label" parent="."]
+offset_left = 794.0
+offset_top = 84.0
+offset_right = 1086.0
+offset_bottom = 133.0
+text = "WHACK THIS GUY"
+label_settings = SubResource("LabelSettings_ysnx4")
+
+[connection signal="area_entered" from="Hammer/HDetect" to="Hole" method="_on_h_detect_area_entered"]
+[connection signal="area_entered" from="Hammer/HDetect" to="Hole_Spawn_Timer" method="_on_h_detect_area_entered"]
+[connection signal="timeout" from="Hole_Spawn_Timer" to="Hole_Spawn_Timer" method="_on_timeout"]
+
+[editable path="Hammer"]
